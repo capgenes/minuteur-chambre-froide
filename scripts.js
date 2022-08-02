@@ -49,6 +49,15 @@
         timersCountBlock.innerHTML = "<span>" + activeTimers + "</span>";
     }
 
+    function build_timer_bloc(timers) {
+        const timersCountBlock = document.querySelector("#timersBlockWrapper");
+        timersCountBlock.innerHTML = "";
+        return timers.map(obj => {
+            const remainingTimeInSeconds = obj.remainingTime;
+            timersCountBlock.innerHTML += "<span>" + remainingTimeInSeconds + "</span>";
+        });
+    }
+
     function update_timers() {
         const now = new Date();
         const currentTimeInSeconds = Math.floor(now/1000);
@@ -58,8 +67,10 @@
             const remainingTimeInSeconds = timer_duration_in_seconds-elapsedTimeInSecond;
             return {...obj, remainingTime: remainingTimeInSeconds}
         });
+
         activeTimers = timers.length;
         build_timers_count(activeTimers);
+        build_timer_bloc(updatedTimers);
         console.log(updatedTimers);
     }
 
