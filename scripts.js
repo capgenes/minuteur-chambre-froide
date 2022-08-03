@@ -12,7 +12,7 @@
      */
 
     const timers = [];
-    const timer_duration_in_seconds = 60; /*1800 pour 30 min - 900 pour 15 min*/
+    const timer_duration_in_seconds = 1800; /*1800 pour 30 min - 900 pour 15 min*/
     const timer_max_instances_count = 15; /*15 pour le labo*/
     let activeTimers = 0;
 
@@ -88,6 +88,20 @@
         });
     }
 
+    function build_a_clock() {
+        function checkTime(i) {
+            if (i < 10) {i = "0" + i}  // add zero in front of numbers < 10
+            return i;
+        }
+        const today = new Date();
+        let h = today.getHours();
+        let m = today.getMinutes();
+        let s = today.getSeconds();
+        m = checkTime(m);
+        s = checkTime(s);
+        document.querySelector("#clock").innerHTML =  "<span>" + h + ":" + m + ":" + s + "</span>";
+    }
+
     function animate_timers_blocs(timers) {
         const timersBlockWrapper = document.querySelector("#timersBlockWrapper");
         const timersBlockWrapperWidth = timersBlockWrapper.offsetWidth;
@@ -132,6 +146,8 @@
     }
 
     window.onload = function() {
+
+        setInterval(build_a_clock, 1000);
         build_timeline_steps(timer_duration_in_seconds);
         document.body.onkeyup = function(e) {
             if (e.key === " " || e.code === "Space") {
