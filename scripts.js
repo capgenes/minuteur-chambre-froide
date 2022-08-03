@@ -12,8 +12,8 @@
      */
 
     const timers = [];
-    const timer_duration_in_seconds = 30; /*1800 pour 30 min - 900 pour 15 min*/
-    const timer_max_instances_count = 3; /*15 pour le labo*/
+    const timer_duration_in_seconds = 60; /*1800 pour 30 min - 900 pour 15 min*/
+    const timer_max_instances_count = 15; /*15 pour le labo*/
     let activeTimers = 0;
 
     /**
@@ -91,18 +91,21 @@
     function animate_timers_blocs(timers) {
         const timersBlockWrapper = document.querySelector("#timersBlockWrapper");
         const timersBlockWrapperWidth = timersBlockWrapper.offsetWidth;
-        const timersBlockWrapperFinalWidth = timersBlockWrapperWidth-(((2*timersBlockWrapperWidth)/100)*6);
-        const translateXmax = "translateX(" + timersBlockWrapperFinalWidth + "px)";
+        const timersBlockWrapperFinalWidth = timersBlockWrapperWidth-(((timersBlockWrapperWidth)/100)*6);
 
         return timers.map((obj, index) => {
             const timerClass = ".timer_" + index;
             const timersCountBlockToAnimate = document.querySelector(timerClass);
             const remainingTimeInSeconds = obj.remainingTime;
+            const resteEnPourcent = (remainingTimeInSeconds*100)/timer_duration_in_seconds;
+            const timersBlockWrapperRemainingWidth = (timersBlockWrapperFinalWidth*resteEnPourcent)/100;
+            const translateXMax = "translateX(" + timersBlockWrapperRemainingWidth + "px)";
+            const translateXMin = "translateX(0px)";
 
             if (timersCountBlockToAnimate !== null) {
                 timersCountBlockToAnimate.animate([
-                    { transform: translateXmax },
-                    { transform: 'translateX(0px)' }
+                    { transform: translateXMax },
+                    { transform: translateXMin }
                 ], {
                     duration: remainingTimeInSeconds*1000,
                     iterations: 1
