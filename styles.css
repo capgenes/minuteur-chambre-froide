@@ -40,29 +40,71 @@ h1 {
     align-self: center;
 }
 
+#timelineIndicatorWrapper {
+    width: 90%;
+    margin-top: 25px;
+    display: flex;
+    align-self: center;
+}
+
+#timelineIndicatorWrapper>span {
+    flex: auto;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+    font-weight: 900;
+    color: cadetblue;
+}
+
+#timelineMid {
+    text-align: center;
+}
+
+#timelineMax {
+    text-align: right;
+}
+
 #timeLine {
     width: 90%;
     height: 5px;
     border-radius: 5px;
-    margin-top: 50px;
+    margin-top: 5px;
     align-self: center;
     background-color: cadetblue;
 }
 
 #timersBlockWrapper {
     width: 90%;
-    height: 150px;
+    /*height: 100px;*/
     border-radius: 5px;
-    margin-top: 50px;
     display: flex;
     flex-direction: row;
     align-self: center;
-    background-color: #bad1d2;
 }
 
 #timersBlockWrapper>span {
+    width: 6%;
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 50px;
+    font-size: 18px;
     font-weight: 900;
     color: #051d2b;
+    border-radius: 5px;
+    background-color: cadetblue;
+    margin: 10px 5px;
+    padding: 0 5px 5px 5px;
+    align-self: center;
+    text-align: center;
+}
+
+#timersBlockWrapper>span:before {
+    content: '';
+    height: 10px;
+    width: 10px;
+    display: block;
+    position: relative;
+    top: -5px;
+    left: 50%;
+    margin-left: -5px;
+    background-color: cadetblue;
+    transform: rotate(45deg);
+    z-index: 0;
 }
