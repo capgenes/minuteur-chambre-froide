@@ -74,7 +74,6 @@ h1 {
 
 #timersBlockWrapper {
     width: 90%;
-    /*height: 100px;*/
     border-radius: 5px;
     display: flex;
     flex-direction: row;

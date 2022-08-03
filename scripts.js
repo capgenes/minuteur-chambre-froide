@@ -12,8 +12,8 @@
      */
 
     const timers = [];
-    const timer_duration_in_seconds = 1800; /*1800 pour 30 min - 900 pour 15 min*/
-    const timer_max_instances_count = 15;
+    const timer_duration_in_seconds = 30; /*1800 pour 30 min - 900 pour 15 min*/
+    const timer_max_instances_count = 3; /*15 pour le labo*/
     let activeTimers = 0;
 
     /**
@@ -71,7 +71,7 @@
         const timersCountBlock = document.querySelector("#timersBlockWrapper");
         timersCountBlock.innerHTML = "";
         let remainingMinutes = "";
-        return timers.map(obj => {
+        return timers.map((obj, index) => {
             const remainingTimeInSeconds = obj.remainingTime;
             if (remainingTimeInSeconds > 59) {
                 remainingMinutes = Math.floor(remainingTimeInSeconds / 60);
@@ -80,21 +80,41 @@
             }
             const remainingSeconds = remainingTimeInSeconds - remainingMinutes * 60;
             if (remainingTimeInSeconds > 0) {
-                timersCountBlock.innerHTML += "<span>" + remainingMinutes + ":" + remainingSeconds + "</span>";
+                timersCountBlock.innerHTML += "<span class='timer_" + index + "'>" + remainingMinutes + ":" + remainingSeconds + "</span>";
             } else {
-                /* here, play a sound once */
+                // TODO here, play a sound once
                 timersCountBlock.innerHTML += "<span>0</span>";
             }
         });
     }
 
     function animate_timers_blocs(timers) {
+        const timersBlockWrapper = document.querySelector("#timersBlockWrapper");
+        const timersBlockWrapperWidth = timersBlockWrapper.offsetWidth;
+        const timersBlockWrapperFinalWidth = timersBlockWrapperWidth-(((2*timersBlockWrapperWidth)/100)*6);
+        const translateXmax = "translateX(" + timersBlockWrapperFinalWidth + "px)";
 
+        return timers.map((obj, index) => {
+            const timerClass = ".timer_" + index;
+            const timersCountBlockToAnimate = document.querySelector(timerClass);
+            const remainingTimeInSeconds = obj.remainingTime;
+
+            if (timersCountBlockToAnimate !== null) {
+                timersCountBlockToAnimate.animate([
+                    { transform: translateXmax },
+                    { transform: 'translateX(0px)' }
+                ], {
+                    duration: remainingTimeInSeconds*1000,
+                    iterations: 1
+                })
+            }
+        });
     }
 
     function update_timers() {
         const now = new Date();
         const currentTimeInSeconds = Math.floor(now/1000);
+
         const updatedTimers = timers.map(obj => {
             const startTimeFromTimersArray = obj.startTime;
             const elapsedTimeInSecond = currentTimeInSeconds-startTimeFromTimersArray;
@@ -105,6 +125,7 @@
         activeTimers = timers.length;
         build_timers_count(activeTimers);
         build_timer_bloc(updatedTimers);
+        animate_timers_blocs(updatedTimers);
     }
 
     window.onload = function() {
@@ -119,6 +140,6 @@
                 removeFirstTimer();
             }
         }
-        setInterval(update_timers, 10);
+        setInterval(update_timers, 1000);
     }
 })();
