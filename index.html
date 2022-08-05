@@ -12,7 +12,7 @@
   <body>
     <div id="minuteurChambreFroide">
       <div id="clock"></div>
-      <h1>Nombre de chronos actifs</h1>
+      <h1>chronos actifs</h1>
       <div id="timersCountBlock"></div>
       <div id="timelineIndicatorWrapper">
         <span id="timelineMin">0 min</span>
@@ -21,6 +21,20 @@
       </div>
       <div id="timeLine"></div>
       <div id="timersBlockWrapper"></div>
+      <ul>
+        <li>
+          <span>Espace</span> pour créer un timer<br>
+        </li>
+        <li>
+          <span>Echap</span> ou <span>Suppr</span> ou <span>←</span> pour supprimer le plus ancien timer<br>
+        </li>
+        <li>
+          Clic sur <span class="crossButton">X</span> pour supprimer un timer<br>
+        </li>
+        <li>
+          <span class="warning">/!\</span> Il faut supprimer (<span>Echap</span> ou <span>Suppr</span> ou <span>←</span>) le timer qui vient de se terminer sinon le son du prochain timer qui se termine ne joue pas. <span class="warning">/!\</span>
+        </li>
+      </ul>
     </div>
     <script type="text/javascript" src="scripts.js"></script>
   </body>

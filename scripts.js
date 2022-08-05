@@ -12,7 +12,7 @@
      */
 
     const timers = [];
-    const timer_duration_in_seconds = 18; /*1800 pour 30 min - 900 pour 15 min*/
+    const timer_duration_in_seconds = 1800; /*1800 pour 30 min - 900 pour 15 min*/
     const timer_max_instances_count = 15; /*15 pour le labo*/
     const sound = new Audio('/fanfare.mp3');
     let activeTimers = 0;
