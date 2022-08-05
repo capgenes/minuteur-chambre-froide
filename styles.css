@@ -95,7 +95,7 @@ h1 {
 }
 
 #timersBlockWrapper>span {
-    width: 6%;
+    width: 40px;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 18px;
     font-weight: 900;
@@ -120,4 +120,25 @@ h1 {
     background-color: cadetblue;
     transform: rotate(45deg);
     z-index: 0;
+}
+
+.close-button {
+    transition: all 0.5s ease;
+    position: absolute;
+    background-color: tomato;
+    padding: 1px 5px;
+    left: 0;
+    bottom: 0;
+    margin-left: -11px;
+    margin-bottom: -9px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    font-size: 11px;
+    color: white;
+    text-decoration: none;
+    box-shadow: -3px 1px 6px 0px rgba(0,0,0,0.1);
+}
+
+.close-button:hover {
+    transform: scale(2);
 }

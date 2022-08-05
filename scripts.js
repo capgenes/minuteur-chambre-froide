@@ -12,8 +12,9 @@
      */
 
     const timers = [];
-    const timer_duration_in_seconds = 1800; /*1800 pour 30 min - 900 pour 15 min*/
+    const timer_duration_in_seconds = 18; /*1800 pour 30 min - 900 pour 15 min*/
     const timer_max_instances_count = 15; /*15 pour le labo*/
+    const sound = new Audio('/fanfare.mp3');
     let activeTimers = 0;
 
     /**
@@ -32,6 +33,23 @@
      */
     function removeFirstTimer() {
         timers.shift();
+    }
+
+    /**
+     * This function builds a simple clock to display in an HTML block
+     */
+    function build_a_clock() {
+        function checkTime(i) {
+            if (i < 10) {i = "0" + i}  // add zero in front of numbers < 10
+            return i;
+        }
+        const today = new Date();
+        let h = today.getHours();
+        let m = today.getMinutes();
+        let s = today.getSeconds();
+        m = checkTime(m);
+        s = checkTime(s);
+        document.querySelector("#clock").innerHTML =  "<span>" + h + ":" + m + ":" + s + "</span>";
     }
 
     /**
@@ -73,43 +91,38 @@
         let remainingMinutes = "";
         return timers.map((obj, index) => {
             const remainingTimeInSeconds = obj.remainingTime;
+
             if (remainingTimeInSeconds > 59) {
                 remainingMinutes = Math.floor(remainingTimeInSeconds / 60);
             } else {
-                remainingMinutes = "";
+                remainingMinutes = "<span>0</span>";
             }
-            const remainingSeconds = remainingTimeInSeconds - remainingMinutes * 60;
+
             if (remainingTimeInSeconds > 0) {
-                timersCountBlock.innerHTML += "<span class='timer_" + index + "'>" + remainingMinutes + ":" + remainingSeconds + "</span>";
+                timersCountBlock.innerHTML += "<span id='timer_" + index + "'><a href='#' class='close-button'>&#10006;</a>" + remainingMinutes + "</span>";
             } else {
-                // TODO here, play a sound once
+                let endOfTimerSound = sound.play();
+                if (endOfTimerSound !== undefined) {
+                    endOfTimerSound.then(_ => {
+                        setTimeout(function(){
+                            sound.pause();
+                            sound.currentTime = 0;
+                        }, 2000);
+                    }).catch(error => {});
+                }
                 timersCountBlock.innerHTML += "<span>0</span>";
             }
         });
     }
 
-    function build_a_clock() {
-        function checkTime(i) {
-            if (i < 10) {i = "0" + i}  // add zero in front of numbers < 10
-            return i;
-        }
-        const today = new Date();
-        let h = today.getHours();
-        let m = today.getMinutes();
-        let s = today.getSeconds();
-        m = checkTime(m);
-        s = checkTime(s);
-        document.querySelector("#clock").innerHTML =  "<span>" + h + ":" + m + ":" + s + "</span>";
-    }
-
     function animate_timers_blocs(timers) {
         const timersBlockWrapper = document.querySelector("#timersBlockWrapper");
         const timersBlockWrapperWidth = timersBlockWrapper.offsetWidth;
-        const timersBlockWrapperFinalWidth = timersBlockWrapperWidth-(((timersBlockWrapperWidth)/100)*6);
+        const timersBlockWrapperFinalWidth = timersBlockWrapperWidth-40;
 
         return timers.map((obj, index) => {
-            const timerClass = ".timer_" + index;
-            const timersCountBlockToAnimate = document.querySelector(timerClass);
+            const timerId = "#timer_" + index;
+            const timersCountBlockToAnimate = document.querySelector(timerId);
             const remainingTimeInSeconds = obj.remainingTime;
             const resteEnPourcent = (remainingTimeInSeconds*100)/timer_duration_in_seconds;
             const timersBlockWrapperRemainingWidth = (timersBlockWrapperFinalWidth*resteEnPourcent)/100;
@@ -128,6 +141,22 @@
         });
     }
 
+    /**
+     * Cette fonction supprime une entrée du tableau timers
+     * au clic sur la croix du bloc correspondant
+     */
+    function delete_a_timer_block() {
+        const timerBlockCloseButton = document.querySelectorAll(".close-button");
+        for (let i = 0; i < timerBlockCloseButton.length; i++) {
+            const timerBlockCloseButtonParentNode = timerBlockCloseButton[i].parentNode;
+            timerBlockCloseButtonParentNode.addEventListener('click', event => {
+                const timerBlockCloseButtonParentNodeIdNumber = timerBlockCloseButtonParentNode.id.slice(-1);
+                timers.splice(timerBlockCloseButtonParentNodeIdNumber, 1);
+                event.stopPropagation();
+            });
+        }
+    }
+
     function update_timers() {
         const now = new Date();
         const currentTimeInSeconds = Math.floor(now/1000);
@@ -143,18 +172,21 @@
         build_timers_count(activeTimers);
         build_timer_bloc(updatedTimers);
         animate_timers_blocs(updatedTimers);
+        delete_a_timer_block();
     }
 
     window.onload = function() {
-
         setInterval(build_a_clock, 1000);
         build_timeline_steps(timer_duration_in_seconds);
+
         document.body.onkeyup = function(e) {
+
             if (e.key === " " || e.code === "Space") {
                 if (timers.length < timer_max_instances_count) {
                     startNewTimer();
                 }
             }
+
             if (e.key === "Escape" || e.code === "Backspace" || e.code === "Delete") {
                 removeFirstTimer();
             }
