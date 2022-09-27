@@ -1,20 +1,12 @@
 'use strict';
 
 (function(){
-
-    /**
-     * - Sur une ligne, on voit apparaître tous les timer se déplaçant de
-     *   droite à gauche avec le nombre de min+sec restantes et une croix
-     *   pour fermer
-     *
-     * - Les timers se déplacent sur la ligne grâce à la comparaison entre le
-     *   timestamp du début du timer et le timestamp actuel
-     */
-
     const timers = [];
     const timer_duration_in_seconds = 1800; /*1800 pour 30 min - 900 pour 15 min*/
     const timer_max_instances_count = 15; /*15 pour le labo*/
     const sound = new Audio('./fanfare.mp3');
+    const jours_fr = ["Dimanche","Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi"];
+    const mois_fr = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
     let activeTimers = 0;
 
     /**
@@ -36,7 +28,7 @@
     }
 
     /**
-     * This function builds a simple clock to display in an HTML block
+     * Cette fonction créé une horloge et l'affiche dans un bloc HTML
      */
     function build_a_clock() {
         function checkTime(i) {
@@ -45,10 +37,16 @@
         }
         const today = new Date();
         let h = today.getHours();
-        let m = today.getMinutes();
-        let s = today.getSeconds();
-        m = checkTime(m);
-        s = checkTime(s);
+        let m = checkTime(today.getMinutes());
+        let s = checkTime(today.getSeconds());
+        let day = jours_fr[today.getDay()];
+        let date = today.getDate();
+        let month = today.getMonth();
+        let literal_month = mois_fr[month];
+        let y = today.getFullYear();
+        let q = (Date.UTC(y, month, date) - Date.UTC(y, 0, 0)) / 24 / 60 / 60 / 1000;
+
+        document.querySelector("#date").innerHTML =  "<span>" + day + " " + date + " " + literal_month + " - " + q + "</span>";
         document.querySelector("#clock").innerHTML =  "<span>" + h + ":" + m + ":" + s + "</span>";
     }
 
@@ -101,15 +99,7 @@
             if (remainingTimeInSeconds > 0) {
                 timersCountBlock.innerHTML += "<span id='timer_" + index + "'><a href='#' class='close-button'>&#10006;</a>" + remainingMinutes + "</span>";
             } else {
-                let endOfTimerSound = sound.play();
-                if (endOfTimerSound !== undefined) {
-                    endOfTimerSound.then(_ => {
-                        setTimeout(function(){
-                            sound.pause();
-                            sound.currentTime = 0;
-                        }, 2000);
-                    }).catch(error => {});
-                }
+                sound.play();
                 timersCountBlock.innerHTML += "<span>0</span>";
             }
         });
@@ -189,6 +179,8 @@
 
             if (e.key === "Escape" || e.code === "Backspace" || e.code === "Delete") {
                 removeFirstTimer();
+                sound.pause();
+                sound.currentTime = 0;
             }
         }
         setInterval(update_timers, 1000);
